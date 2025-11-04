@@ -12,7 +12,8 @@
 5. **04_enrich_pluto.py** - NumFloors, YearBuilt from PLUTO
 6. **05_enrich_footprints.py** - Building polygons
 7. **06_enrich_names.py** - Official names (LPC → OSM → Exa)
-8. *(Result: Fully enriched dataset)*
+8. **Standardize CSV to include all information needed for app**
+9. *(Result: Fully enriched dataset)*
 
 ### Phase 3: Score & Rank
 9. **07_ml_scoring.py** - Apply landmark pruning ML model → final_score

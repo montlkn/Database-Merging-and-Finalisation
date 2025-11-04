@@ -150,7 +150,15 @@ def main():
     logger.info(f"  From new_additions: {(combined['source'] == 'new_additions').sum()}")
     logger.info(f"  From existing_landmarks: {(combined['source'] == 'existing_landmarks').sum()}")
     logger.info(f"  Potential duplicates: {combined['is_potential_duplicate'].sum()}")
-    logger.info(f"  Date range: {combined['year_built'].min():.0f} - {combined['year_built'].max():.0f}")
+
+    # Convert year_built to numeric for stats
+    combined['year_built'] = pd.to_numeric(combined['year_built'], errors='coerce')
+    year_min = combined['year_built'].min()
+    year_max = combined['year_built'].max()
+    if pd.notna(year_min) and pd.notna(year_max):
+        logger.info(f"  Date range: {year_min:.0f} - {year_max:.0f}")
+    else:
+        logger.info(f"  Date range: Unknown (needs cleaning)")
 
     # Distribution by source
     logger.info("\nBy source:")
