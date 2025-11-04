@@ -9,6 +9,6 @@ shapely>=2.0.0
 # HTTP requests
 requests>=2.31.0
 
-# Optional (add as needed)
-# python-dotenv  # for .env file support
-# tqdm  # for progress bars
+# Optional but useful
+python-dotenv>=1.0.0  # for .env file support
+tqdm>=4.65.0  # for progress bars
