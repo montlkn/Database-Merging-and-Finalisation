@@ -1,0 +1,32 @@
+"""
+Configuration file for NYC Buildings Pipeline
+Copy this to config.py and fill in your API keys
+"""
+
+# API Keys
+NYC_GEOCLIENT_APP_ID = "your_app_id_here"
+NYC_GEOCLIENT_APP_KEY = "your_app_key_here"
+EXA_API_KEY = "your_exa_key_here"  # Optional, for name enrichment
+
+# File Paths
+RAW_DATA_DIR = "data/raw"
+INTERMEDIATE_DIR = "data/intermediate"
+OUTPUT_DIR = "data/output"
+
+# Input files
+NEW_ADDITIONS_CSV = f"{RAW_DATA_DIR}/new_additions.csv"
+EXISTING_LANDMARKS_CSV = f"{RAW_DATA_DIR}/walk_optimized_landmarks.csv"
+PLUTO_CSV = f"{RAW_DATA_DIR}/pluto.csv"
+BUILDING_FOOTPRINTS_CSV = f"{RAW_DATA_DIR}/building_footprints.csv"  # Download from NYC Open Data
+
+# Validation thresholds
+MIN_FLOORS = 1
+MAX_FLOORS = 180
+MIN_YEAR = 1850
+MAX_YEAR = 2025
+
+# Spatial parameters (EPSG:2263 is NYC State Plane in feet)
+SNAP_THRESHOLD_METERS = 15
+DUPLICATE_DISTANCE_METERS = 20
+EPSG_WGS84 = 4326
+EPSG_NYC_STATE_PLANE = 2263

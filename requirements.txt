@@ -1,0 +1,14 @@
+# Core
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Geocoding & spatial
+geopy>=2.3.0
+shapely>=2.0.0
+
+# HTTP requests
+requests>=2.31.0
+
+# Optional (add as needed)
+# python-dotenv  # for .env file support
+# tqdm  # for progress bars
