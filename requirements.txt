@@ -5,6 +5,7 @@ numpy>=1.24.0
 # Geocoding & spatial
 geopy>=2.3.0
 shapely>=2.0.0
+geopandas>=0.14.0
 
 # HTTP requests
 requests>=2.31.0
@@ -12,3 +13,4 @@ requests>=2.31.0
 # Optional but useful
 python-dotenv>=1.0.0  # for .env file support
 tqdm>=4.65.0  # for progress bars
+exa-py>=1.0.0

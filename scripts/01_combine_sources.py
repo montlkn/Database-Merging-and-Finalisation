@@ -47,10 +47,20 @@ def standardize_new_additions(df: pd.DataFrame) -> pd.DataFrame:
         'address': df['des_addres'],
         'building_name': None,  # Will be enriched later
         'architect': df['arch_build'],
+        'alt_architect': df.get('alt_arch_1'),
+        'owner_developer': df.get('own_devel'),
         'style': df['style_prim'],
         'style_secondary': df.get('style_sec'),
+        'style_other': df.get('style_oth'),
         'year_built': df['build_year'],
+        'date_combo': df.get('date_combo'),  # Original date string (e.g., "c. 1952")
         'building_type': df['build_type'],
+        'use_original': df.get('use_orig'),
+        'mat_primary': df.get('mat_prim'),
+        'mat_secondary': df.get('mat_sec'),
+        'mat_tertiary': df.get('mat_third'),
+        'historic_district': df.get('hist_dist'),
+        'location': df.get('location'),  # Neighborhood
         'latitude': coords.apply(lambda x: x[1] if x else None),
         'longitude': coords.apply(lambda x: x[0] if x else None),
         'source': 'new_additions',
@@ -74,10 +84,20 @@ def standardize_existing_landmarks(df: pd.DataFrame) -> pd.DataFrame:
         'address': df['des_addres'],
         'building_name': df.get('build_nme'),
         'architect': df.get('arch_build'),
+        'alt_architect': None,  # Not in existing data
+        'owner_developer': None,  # Not in existing data
         'style': df.get('style_prim'),
         'style_secondary': None,
+        'style_other': None,  # Not in existing data
         'year_built': df.get('build_year'),
+        'date_combo': None,  # Not in existing data
         'building_type': df.get('build_type'),
+        'use_original': None,  # Not in existing data
+        'mat_primary': None,  # Not in existing data
+        'mat_secondary': None,  # Not in existing data
+        'mat_tertiary': None,  # Not in existing data
+        'historic_district': None,  # Not in existing data
+        'location': None,  # Not in existing data
         'num_floors': df.get('NumFloors'),
         'borough': df.get('Borough'),
         'final_score': df.get('final_score'),  # Preserve existing ML score

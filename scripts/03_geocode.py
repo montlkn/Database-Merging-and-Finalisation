@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Step 1: Geocode addresses to BBL/BIN via NYC Geoclient API
+Step 3: Geocode addresses to BBL/BIN via NYC Geoclient API
 
-Input: data/raw/new_additions.csv
-Output: data/intermediate/01_geocoded.csv
+Input: data/intermediate/02_combined_with_gaps.csv
+Output: data/intermediate/03_geocoded.csv
 
 Uses NYC Geoclient API to get authoritative BBL, BIN, and normalized addresses.
 Falls back to existing coordinates if geocoding fails.
@@ -109,7 +109,7 @@ class NYCGeoclient:
 
         # Try borough hint first, then default to Manhattan
         boroughs_to_try = []
-        if borough_hint:
+        if borough_hint and isinstance(borough_hint, str):
             boroughs_to_try.append(borough_hint.lower())
         boroughs_to_try.extend(['manhattan', 'brooklyn', 'queens', 'bronx', 'staten island'])
 
@@ -159,19 +159,40 @@ def geocode_buildings(df: pd.DataFrame, geoclient: NYCGeoclient) -> pd.DataFrame
     """
     logger.info(f"Geocoding {len(df)} buildings...")
 
-    # Parse existing coordinates first
-    coords = df['geom'].apply(parse_point)
-    df['input_lng'] = coords.apply(lambda x: x[0] if x else None)
-    df['input_lat'] = coords.apply(lambda x: x[1] if x else None)
+    # Parse existing coordinates first (from latitude/longitude or geometry columns)
+    if 'latitude' in df.columns and 'longitude' in df.columns:
+        df['input_lat'] = df['latitude']
+        df['input_lng'] = df['longitude']
+    elif 'geometry' in df.columns:
+        # TODO: Extract centroid from geometry for existing landmarks
+        df['input_lat'] = None
+        df['input_lng'] = None
+    else:
+        df['input_lat'] = None
+        df['input_lng'] = None
 
-    # Extract borough hint from location column if available
-    df['borough_hint'] = df.get('location', '').str.extract(r'(Manhattan|Brooklyn|Queens|Bronx|Staten Island)', expand=False)
+    # Extract borough hint from borough column or location column
+    df['borough_hint'] = df.get('borough', df.get('location', ''))
 
     results = []
 
     for idx, row in tqdm(df.iterrows(), total=len(df), desc="Geocoding"):
-        address = row['des_addres']
+        address = row.get('address')
         borough_hint = row.get('borough_hint')
+
+        # Skip if no address
+        if pd.isna(address) or not address:
+            results.append({
+                'bbl': row.get('bbl'),
+                'bin': row.get('bin'),
+                'geocoded_lat': row.get('input_lat'),
+                'geocoded_lng': row.get('input_lng'),
+                'borough_code': None,
+                'borough_name': borough_hint if pd.notna(borough_hint) else None,
+                'normalized_address': None,
+                'geocode_status': 'no_address'
+            })
+            continue
 
         if not geoclient.available:
             # Fallback mode - use existing coordinates
@@ -233,7 +254,7 @@ def geocode_buildings(df: pd.DataFrame, geoclient: NYCGeoclient) -> pd.DataFrame
 
 def main():
     logger.info("=" * 60)
-    logger.info("Step 1: Geocoding Addresses")
+    logger.info("Step 3: Geocoding Addresses")
     logger.info("=" * 60)
 
     # Initialize geoclient
@@ -245,22 +266,28 @@ def main():
         logger.warning("  To enable geocoding, set NYC_GEOCLIENT_SUBSCRIPTION_KEY in config.py\n")
 
     # Load input
-    logger.info(f"Loading: {config.NEW_ADDITIONS_CSV}")
-    df = pd.read_csv(config.NEW_ADDITIONS_CSV)
-    validate_dataframe(df, ['des_addres', 'geom'])
+    input_path = f"{config.INTERMEDIATE_DIR}/02_combined_with_gaps.csv"
+    logger.info(f"Loading: {input_path}")
+    df = pd.read_csv(input_path)
+    logger.info(f"  Loaded {len(df)} buildings")
+
+    # Check if address column exists
+    if 'address' not in df.columns:
+        logger.error("  'address' column not found in dataset")
+        return
 
     # Geocode
     result = geocode_buildings(df, geoclient)
 
     # Examples
     logger.info("\nExample results:")
-    sample = result[['des_addres', 'bbl', 'borough_name', 'geocode_status']].head(3)
+    sample = result[['address', 'bbl', 'borough_name', 'geocode_status']].head(3)
     for _, row in sample.iterrows():
-        logger.info(f"  {row['des_addres']}")
+        logger.info(f"  {row['address']}")
         logger.info(f"    BBL: {row['bbl']}, Borough: {row['borough_name']}, Status: {row['geocode_status']}")
 
     # Save checkpoint
-    output_path = f"{config.INTERMEDIATE_DIR}/01_geocoded.csv"
+    output_path = f"{config.INTERMEDIATE_DIR}/03_geocoded.csv"
     save_checkpoint(result, output_path)
 
     logger.info("✓ Step 1 complete")
