@@ -103,7 +103,7 @@ python scripts/07_calculate_scores.py
 
 ### Tasks
 
-1. **Remove duplicate rows** (3,599 � 3,595)
+1. **Remove duplicate rows** (3,599 � 3,595)
    - Keep building with highest score for duplicate BBLs
 
 2. **Fix borough_name column**
@@ -290,10 +290,10 @@ if 'borough_name' in df.columns:
 
 if all_pass:
     print("\n" + "=" * 60)
-    print("<� ALL CHECKS PASSED - PIPELINE COMPLETE!")
+    print("<� ALL CHECKS PASSED - PIPELINE COMPLETE!")
     print("=" * 60)
 else:
-    print("\n�  Some checks failed - review data")
+    print("\n�  Some checks failed - review data")
 
 VALIDATION_EOF
 ```
@@ -373,5 +373,70 @@ If you encounter issues:
 ---
 
 **Last Updated:** 2025-11-05
-**Pipeline Status:** Steps 01-06 complete  | Steps 07-10 pending �
+**Pipeline Status:** Steps 01-06 complete  | Steps 07-10 pending �
 **Ready for:** Score calculation, cleanup, categorization, and export
+
+
+
+⏺ ✅ Complete! Comprehensive Guide Created
+
+  I've created REMAINING_STEPS.md with everything you need to
+   continue the pipeline. Here's what you have:
+
+  Current Status (Committed to GitHub)
+
+  Completed Steps (01-06):
+  - ✅ Step 01: Field mapping and merging
+  - ✅ Step 02: Gap finding (supertalls)
+  - ✅ Step 03a-h: Geocoding and BBL completion (100%)
+  - ✅ Step 04: PLUTO enrichment (98.1% match)
+  - ✅ Step 05: Building Footprints enrichment (100% height
+  coverage)
+  - ✅ Step 06: Building names (100% coverage)
+
+  Current Data: data/intermediate/06_names_enriched.csv
+  (3,599 buildings, all with names and heights)
+
+  GitHub: https://github.com/montlkn/Database-Merging-and-Fin
+  alisation
+
+  ---
+  What's in REMAINING_STEPS.md
+
+  1. Complete script templates for Steps 07-10:
+    - Step 07: Score calculation (0-100 scale, 5 components)
+    - Step 08: Data cleanup (remove 4 duplicates, fix
+  borough_name)
+    - Step 09: Aesthetic categorization (9 categories)
+    - Step 10: Export (CSV, GeoJSON, JSON)
+  2. Quick start guide for when you clone the repo
+  3. Validation scripts to verify 100% completion at each
+  step
+  4. Expected outputs and troubleshooting tips
+  5. Final verification checklist to confirm pipeline
+  completion
+
+  ---
+  When You're Ready to Continue:
+
+  # Clone the repo
+  git clone https://github.com/montlkn/Database-Merging-and-F
+  inalisation.git
+  cd Database-Merging-and-Finalisation
+
+  # Setup
+  python3 -m venv venv
+  source venv/bin/activate
+  pip install -r requirements.txt
+
+  # Run Steps 07-10
+  python scripts/07_calculate_scores.py
+  python scripts/08_cleanup.py
+  python scripts/09_categorize.py
+  python scripts/10_export.py
+
+  # Verify completion
+  # (validation script in REMAINING_STEPS.md)
+
+  Everything is documented, committed, and ready to pick up
+  where we left off! 🎉
