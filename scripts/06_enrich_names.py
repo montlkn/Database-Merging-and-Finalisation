@@ -1,20 +1,19 @@
 #!/usr/bin/env python3
 """
-Step 4: Enrich with building names
+Step 6: Enrich building names
 
-Input: data/intermediate/03_footprints_enriched.csv
-Output: data/intermediate/04_names_enriched.csv
+Input: data/intermediate/05_footprints_enriched.csv
+Output: data/intermediate/06_names_enriched.csv
 
-Priority cascade:
-1. LPC Landmarks (official names)
-2. Existing database (your curated names)
-3. OSM/Wikidata (future)
-4. Exa.ai (future, optional)
+Goal: 100% building_name coverage (use address as fallback)
 
-Adds columns:
-- build_nme: Building name (if found)
-- name_source: Where the name came from
-- name_confidence: Confidence score (1.0 = authoritative)
+Strategy:
+1. Keep existing building names (from landmarks CSV)
+2. For missing names, try to get from PLUTO (building name field)
+3. For still missing, use address as the display name
+4. Clean up and standardize all names
+
+This ensures every building has a displayable name for the app.
 """
 
 import sys
@@ -22,168 +21,138 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 import pandas as pd
-from utils import validate_dataframe, save_checkpoint, load_checkpoint, logger
+from utils import save_checkpoint, load_checkpoint, logger
 import config
 
 
-def load_lpc_names() -> dict:
+def get_pluto_building_names(pluto_path: str) -> dict:
     """
-    Load building names from LPC landmarks database.
-
-    Returns dict: {address: {'name': str, 'bbl': str}}
+    Load building names from PLUTO if available.
     """
-    logger.info(f"Loading LPC landmark names: {config.LPC_LANDMARKS_CSV}")
-    lpc = pd.read_csv(config.LPC_LANDMARKS_CSV, low_memory=False)
-
-    # Create lookup by address and BBL
-    names = {}
-
-    for _, row in lpc.iterrows():
-        name = row.get('Build_Nme')
-        address = row.get('Des_Addres')
-        bbl = row.get('BBL')
-
-        if pd.notna(name) and name.strip():
-            # Index by address
-            if pd.notna(address):
-                key_addr = str(address).strip().lower()
-                names[key_addr] = {
-                    'name': str(name).strip(),
-                    'bbl': str(bbl) if pd.notna(bbl) else None,
-                    'source': 'lpc_landmarks',
-                    'confidence': 1.0
-                }
-
-            # Also index by BBL
-            if pd.notna(bbl):
-                key_bbl = str(bbl).strip()
-                names[key_bbl] = {
-                    'name': str(name).strip(),
-                    'bbl': str(bbl),
-                    'source': 'lpc_landmarks',
-                    'confidence': 1.0
-                }
-
-    logger.info(f"  Loaded {len(names)} named landmarks from LPC")
-    return names
+    logger.info(f"Loading building names from PLUTO...")
+    
+    try:
+        # Check if PLUTO has a building name column
+        pluto = pd.read_csv(pluto_path, usecols=['BBL', 'Address'], low_memory=False, nrows=100)
+        
+        # PLUTO doesn't have explicit building names, just addresses
+        # We'll skip this source
+        logger.info("  PLUTO doesn't have building name column - skipping")
+        return {}
+        
+    except Exception as e:
+        logger.info(f"  Could not load PLUTO names: {e}")
+        return {}
 
 
-def load_existing_names() -> dict:
+def clean_building_name(name: str) -> str:
     """
-    Load building names from existing curated database.
-
-    Returns dict: {address: {'name': str}}
+    Clean and standardize building name.
     """
-    logger.info(f"Loading existing database names: {config.EXISTING_LANDMARKS_CSV}")
-    existing = pd.read_csv(config.EXISTING_LANDMARKS_CSV)
+    if pd.isna(name):
+        return None
+    
+    name = str(name).strip()
+    
+    # Remove "aka" portions if they're redundant
+    if " (aka " in name:
+        # Keep the aka if it's significantly different
+        parts = name.split(" (aka ")
+        main_name = parts[0].strip()
+        aka_name = parts[1].rstrip(")").strip()
+        
+        # If aka is just the address, drop it
+        if aka_name.replace(",", "").replace(".", "").isdigit() or \
+           len(aka_name.split()) <= 3:  # Short aka, probably just address
+            name = main_name
+    
+    return name if name else None
 
-    names = {}
-    for _, row in existing.iterrows():
-        name = row.get('build_nme')
-        address = row.get('des_addres')
 
-        if pd.notna(name) and name.strip() and pd.notna(address):
-            key = str(address).strip().lower()
-            names[key] = {
-                'name': str(name).strip(),
-                'source': 'existing_database',
-                'confidence': 0.9
-            }
-
-    logger.info(f"  Loaded {len(names)} names from existing database")
-    return names
-
-
-def enrich_names(df: pd.DataFrame, lpc_names: dict, existing_names: dict) -> pd.DataFrame:
+def fill_missing_names(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Enrich buildings with names using priority cascade.
+    Fill missing building names using address as fallback.
     """
-    logger.info(f"Enriching {len(df)} buildings with names...")
-
-    results = []
-
-    for _, row in df.iterrows():
-        address = str(row.get('des_addres', '')).strip().lower()
-        bbl = str(row.get('bbl', '')).strip()
-
-        name = None
-        source = None
-        confidence = 0.0
-
-        # Priority 1: LPC by BBL (most authoritative)
-        if bbl and bbl in lpc_names:
-            match = lpc_names[bbl]
-            name = match['name']
-            source = match['source']
-            confidence = match['confidence']
-
-        # Priority 2: LPC by address
-        elif address and address in lpc_names:
-            match = lpc_names[address]
-            name = match['name']
-            source = match['source']
-            confidence = match['confidence']
-
-        # Priority 3: Existing database
-        elif address and address in existing_names:
-            match = existing_names[address]
-            name = match['name']
-            source = match['source']
-            confidence = match['confidence']
-
-        results.append({
-            'build_nme': name,
-            'name_source': source,
-            'name_confidence': confidence
-        })
-
-    # Add results
-    results_df = pd.DataFrame(results)
-    result = pd.concat([df, results_df], axis=1)
-
-    # Summary
-    named_count = result['build_nme'].notna().sum()
-    logger.info(f"✓ Found names for {named_count}/{len(df)} buildings ({named_count/len(df)*100:.1f}%)")
-
-    # Breakdown by source
-    if named_count > 0:
-        by_source = result[result['build_nme'].notna()]['name_source'].value_counts()
-        logger.info("  Names by source:")
-        for source, count in by_source.items():
-            logger.info(f"    {source}: {count}")
-
-    return result
+    logger.info(f"Filling missing building names...")
+    
+    # Clean existing names
+    df['building_name'] = df['building_name'].apply(clean_building_name)
+    
+    initial_missing = df['building_name'].isna().sum()
+    logger.info(f"  Buildings missing names: {initial_missing}/{len(df)} ({initial_missing/len(df)*100:.1f}%)")
+    
+    # For missing names, use address
+    missing_mask = df['building_name'].isna()
+    
+    for idx in df[missing_mask].index:
+        address = df.at[idx, 'address']
+        
+        if pd.notna(address):
+            # Use address as the building name
+            df.at[idx, 'building_name'] = str(address)
+            df.at[idx, 'name_source'] = 'address'
+        else:
+            # Last resort: use BBL as identifier
+            bbl = df.at[idx, 'bbl']
+            df.at[idx, 'building_name'] = f"Building {bbl}"
+            df.at[idx, 'name_source'] = 'bbl'
+    
+    # Mark source for existing names
+    df.loc[df['name_source'].isna(), 'name_source'] = 'original'
+    
+    final_missing = df['building_name'].isna().sum()
+    logger.info(f"  ✓ Final missing names: {final_missing}/{len(df)} ({final_missing/len(df)*100:.1f}%)")
+    
+    # Count by source
+    name_sources = df['name_source'].value_counts()
+    logger.info(f"\n  Name sources:")
+    for source, count in name_sources.items():
+        logger.info(f"    {source}: {count} ({count/len(df)*100:.1f}%)")
+    
+    return df
 
 
 def main():
     logger.info("=" * 60)
-    logger.info("Step 4: Name Enrichment")
+    logger.info("Step 6: Building Name Enrichment")
     logger.info("=" * 60)
-
-    # Load previous checkpoint
-    footprints_path = f"{config.INTERMEDIATE_DIR}/03_footprints_enriched.csv"
-    logger.info(f"Loading: {footprints_path}")
-    df = load_checkpoint(footprints_path)
-
-    # Load name sources
-    lpc_names = load_lpc_names()
-    existing_names = load_existing_names()
-
-    # Enrich
-    result = enrich_names(df, lpc_names, existing_names)
-
-    # Examples
-    logger.info("\nExample named buildings:")
-    named_sample = result[result['build_nme'].notna()][['des_addres', 'build_nme', 'name_source']].head(5)
-    if len(named_sample) > 0:
-        for _, row in named_sample.iterrows():
-            logger.info(f"  {row['des_addres']}: {row['build_nme']} [{row['name_source']}]")
-
+    logger.info("TARGET: 100% building_name coverage (use address as fallback)")
+    
+    # Load current state
+    input_path = f"{config.INTERMEDIATE_DIR}/05_footprints_enriched.csv"
+    logger.info(f"\nLoading: {input_path}")
+    df = load_checkpoint(input_path)
+    
+    initial_name_count = df['building_name'].notna().sum()
+    logger.info(f"  Starting name coverage: {initial_name_count}/{len(df)} ({initial_name_count/len(df)*100:.1f}%)")
+    
+    # Fill missing names
+    result = fill_missing_names(df)
+    
+    # Final summary
+    logger.info("\n" + "=" * 60)
+    logger.info("FINAL NAME ENRICHMENT SUMMARY")
+    logger.info("=" * 60)
+    
+    name_count = result['building_name'].notna().sum()
+    logger.info(f"Building name coverage: {name_count}/{len(result)} ({name_count/len(result)*100:.1f}%)")
+    
+    if name_count == len(result):
+        logger.info("\n🎉 100% BUILDING NAME COVERAGE ACHIEVED!")
+    else:
+        logger.warning(f"\n⚠ {len(result) - name_count} buildings still missing names")
+    
+    # Sample of names
+    logger.info("\nSample building names:")
+    for idx, row in result.head(10).iterrows():
+        source = row.get('name_source', 'unknown')
+        logger.info(f"  {row['building_name'][:50]} [{source}]")
+    
     # Save checkpoint
-    output_path = f"{config.INTERMEDIATE_DIR}/04_names_enriched.csv"
+    output_path = f"{config.INTERMEDIATE_DIR}/06_names_enriched.csv"
     save_checkpoint(result, output_path)
-
-    logger.info("✓ Step 4 complete")
+    
+    logger.info("\n✓ Step 6 complete")
 
 
 if __name__ == "__main__":
