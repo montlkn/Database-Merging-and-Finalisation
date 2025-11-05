@@ -53,11 +53,11 @@ def merge_manual_bbls(df: pd.DataFrame, manual_file: str) -> pd.DataFrame:
 
             if len(match) > 0:
                 match_idx = match.index[0]
-                df.at[match_idx, 'bbl'] = str(row['bbl_manual']).strip()
+                df.at[match_idx, 'bbl'] = float(str(row['bbl_manual']).strip())
 
                 # Also merge BIN if provided
                 if pd.notna(row.get('bin_manual')) and str(row['bin_manual']).strip():
-                    df.at[match_idx, 'bin'] = str(row['bin_manual']).strip()
+                    df.at[match_idx, 'bin'] = float(str(row['bin_manual']).strip())
 
                 merged_count += 1
 

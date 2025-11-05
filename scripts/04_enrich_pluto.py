@@ -157,8 +157,8 @@ def main():
     logger.info("Step 4: PLUTO Enrichment")
     logger.info("=" * 60)
 
-    # Load geocoded buildings with completed BBLs
-    geocoded_path = f"{config.INTERMEDIATE_DIR}/03c_regeocoded.csv"
+    # Load deduplicated buildings with completed BBLs
+    geocoded_path = f"{config.INTERMEDIATE_DIR}/03g_deduplicated.csv"
     logger.info(f"Loading: {geocoded_path}")
     df = load_checkpoint(geocoded_path)
 
