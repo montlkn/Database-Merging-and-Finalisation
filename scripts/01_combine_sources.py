@@ -63,6 +63,7 @@ def standardize_new_additions(df: pd.DataFrame) -> pd.DataFrame:
         'location': df.get('location'),  # Neighborhood
         'latitude': coords.apply(lambda x: x[1] if x else None),
         'longitude': coords.apply(lambda x: x[0] if x else None),
+        'height': pd.to_numeric(df.get('height_arch'), errors='coerce'),
         'source': 'new_additions',
         'source_confidence': 1.0
     })
@@ -146,6 +147,32 @@ def main():
     logger.info(f"\nLoading new additions: {config.NEW_ADDITIONS_CSV}")
     new_additions = pd.read_csv(config.NEW_ADDITIONS_CSV)
     logger.info(f"  Loaded {len(new_additions)} new buildings (1952-2023)")
+
+    # Load supplemental additions if available
+    supplemental_path = getattr(config, "SUPPLEMENTAL_ADDITIONS_CSV", None)
+    if supplemental_path and os.path.exists(supplemental_path):
+        logger.info(f"\nLoading supplemental additions: {supplemental_path}")
+        supplemental = pd.read_csv(supplemental_path)
+        logger.info(f"  Loaded {len(supplemental)} supplemental buildings")
+
+        if not supplemental.empty:
+            combined_additions = pd.concat([new_additions, supplemental], ignore_index=True)
+            combined_additions['address_normalized'] = combined_additions['des_addres'].fillna('').str.lower().str.strip()
+
+            # Ensure blank addresses remain unique when deduplicating
+            blank_mask = combined_additions['address_normalized'] == ''
+            if blank_mask.any():
+                combined_additions.loc[blank_mask, 'address_normalized'] = (
+                    '__blank__' + combined_additions.index[blank_mask].astype(str)
+                )
+
+            before = len(combined_additions)
+            combined_additions = combined_additions.drop_duplicates(subset=['address_normalized'], keep='last')
+            after = len(combined_additions)
+            if before != after:
+                logger.info(f"  Replaced {before - after} records with supplemental overrides")
+
+            new_additions = combined_additions.drop(columns=['address_normalized'])
 
     # Load existing landmarks
     logger.info(f"\nLoading existing landmarks: {config.EXISTING_LANDMARKS_CSV}")

@@ -19,6 +19,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 import pandas as pd
+from pandas.api.types import is_string_dtype
 import requests
 import time
 from utils import save_checkpoint, load_checkpoint, logger
@@ -119,6 +120,17 @@ class NYCGeoclient:
         return {'status': 'not_found'}
 
 
+def ensure_identifier_dtypes(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Ensure BBL/BIN columns use pandas string dtype so updates accept new values.
+    """
+    if 'bbl' in df.columns and not is_string_dtype(df['bbl']):
+        df['bbl'] = df['bbl'].astype('string')
+    if 'bin' in df.columns and not is_string_dtype(df['bin']):
+        df['bin'] = df['bin'].astype('string')
+    return df
+
+
 def clean_address_for_geocoding(address: str) -> str:
     """
     Clean address format for better geocoding results.
@@ -144,6 +156,8 @@ def regeocode_for_bbls(df: pd.DataFrame, geoclient: NYCGeoclient) -> pd.DataFram
     Re-geocode buildings that have addresses but no BBL.
     """
     logger.info(f"Re-geocoding buildings for BBL completion...")
+
+    df = ensure_identifier_dtypes(df)
 
     if not geoclient.available:
         logger.warning("Geoclient API not available - skipping re-geocoding")

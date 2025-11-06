@@ -19,12 +19,30 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 import pandas as pd
+from pandas.api.types import is_string_dtype
 import requests
 from shapely import wkt
 from shapely.geometry import Point
 from utils import save_checkpoint, load_checkpoint, logger
 import config
 import time
+
+
+def building_footprints_available(timeout: float = 3.0) -> bool:
+    """
+    Quickly check if the Building Footprints API is reachable.
+    """
+    try:
+        response = requests.get(
+            config.BUILDING_FOOTPRINTS_API,
+            params={'$limit': 1},
+            timeout=timeout,
+            headers={'User-Agent': 'nyc-buildings-pipeline/03b'}
+        )
+        return response.status_code == 200
+    except requests.RequestException as exc:
+        logger.warning(f"Building Footprints API not reachable ({exc}); remote lookups disabled for this run.")
+        return False
 
 
 def extract_centroids_from_geometry(df: pd.DataFrame) -> pd.DataFrame:
@@ -62,9 +80,10 @@ def get_bbl_from_building_footprints(lat: float, lng: float, bin_num: str = None
     url = config.BUILDING_FOOTPRINTS_API
 
     # Strategy 1: Search by BIN if available
-    if bin_num:
+    if pd.notna(bin_num) and str(bin_num).strip():
+        bin_num_str = str(bin_num).strip()
         params = {
-            '$where': f"bin='{bin_num}'",
+            '$where': f"bin='{bin_num_str}'",
             '$limit': 1,
             '$select': 'bin,base_bbl,height_roof,construction_year',
             '$$app_token': config.SOCRATA_APP_TOKEN
@@ -84,7 +103,7 @@ def get_bbl_from_building_footprints(lat: float, lng: float, bin_num: str = None
             logger.debug(f"BIN lookup failed: {e}")
 
     # Strategy 2: Find closest building within 50m using coordinates
-    if lat and lng:
+    if pd.notna(lat) and pd.notna(lng):
         # Buffer of ~50 meters in degrees (rough approximation)
         buffer = 0.0005
 
@@ -119,6 +138,12 @@ def complete_bbls(df: pd.DataFrame) -> pd.DataFrame:
     """
     logger.info(f"Completing BBLs for {len(df)} buildings...")
 
+    # Allow writing string identifiers (BBL/BIN) without dtype warnings
+    if 'bbl' in df.columns and not is_string_dtype(df['bbl']):
+        df['bbl'] = df['bbl'].astype('string')
+    if 'bin' in df.columns and not is_string_dtype(df['bin']):
+        df['bin'] = df['bin'].astype('string')
+
     initial_bbl_count = df['bbl'].notna().sum()
     logger.info(f"  Starting BBL coverage: {initial_bbl_count}/{len(df)} ({initial_bbl_count/len(df)*100:.1f}%)")
 
@@ -133,30 +158,33 @@ def complete_bbls(df: pd.DataFrame) -> pd.DataFrame:
         logger.info("✓ All buildings already have BBLs!")
         return df
 
-    # Try to get BBLs from Building Footprints API
-    logger.info("Looking up BBLs from Building Footprints API...")
-
     lookups_success = 0
-    for idx, row in missing_bbls.iterrows():
-        lat = row.get('geocoded_lat')
-        lng = row.get('geocoded_lng')
-        bin_num = row.get('bin')
+    if building_footprints_available():
+        # Try to get BBLs from Building Footprints API
+        logger.info("Looking up BBLs from Building Footprints API...")
 
-        # Skip if no coordinates and no BIN
-        if (pd.isna(lat) or pd.isna(lng)) and pd.isna(bin_num):
-            continue
+        for idx, row in missing_bbls.iterrows():
+            lat = row.get('geocoded_lat')
+            lng = row.get('geocoded_lng')
+            bin_num = row.get('bin')
 
-        # Try to get BBL
-        result = get_bbl_from_building_footprints(lat, lng, bin_num)
+            # Skip if no coordinates and no BIN
+            if (pd.isna(lat) or pd.isna(lng)) and pd.isna(bin_num):
+                continue
 
-        if result['bbl']:
-            df.at[idx, 'bbl'] = result['bbl']
-            if result.get('bin') and pd.isna(df.at[idx, 'bin']):
-                df.at[idx, 'bin'] = result['bin']
-            lookups_success += 1
+            # Try to get BBL
+            result = get_bbl_from_building_footprints(lat, lng, bin_num)
 
-            if lookups_success % 100 == 0:
-                logger.info(f"  Found {lookups_success} BBLs so far...")
+            if result['bbl']:
+                df.at[idx, 'bbl'] = result['bbl']
+                if result.get('bin') and pd.isna(df.at[idx, 'bin']):
+                    df.at[idx, 'bin'] = result['bin']
+                lookups_success += 1
+
+                if lookups_success % 100 == 0:
+                    logger.info(f"  Found {lookups_success} BBLs so far...")
+    else:
+        logger.warning("Skipping Building Footprints lookup; leaving remaining BBLs blank this run.")
 
     logger.info(f"✓ Found {lookups_success} additional BBLs from Building Footprints")
 

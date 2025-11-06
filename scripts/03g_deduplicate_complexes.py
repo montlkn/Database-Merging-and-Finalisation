@@ -7,14 +7,10 @@ Output: data/intermediate/03g_deduplicated.csv
 
 Strategy:
 - Many BBLs have multiple buildings (complexes like Chelsea Square, WTC, etc.)
-- For each BBL with 2+ buildings, keep only ONE representative building
-- Selection criteria (in order):
-  1. Prefer buildings with building_name filled in
-  2. Prefer source='existing_landmarks' (they're official LPC landmarks)
-  3. Prefer shorter addresses (main building)
-  4. Keep first match if tie
-
-This ensures we have 1:1 mapping of buildings to BBLs.
+- Instead of dropping the “duplicates”, flag them so downstream steps can decide
+  how to aggregate or present the complex.
+- For each duplicated BBL we identify a preferred “primary” record and annotate
+  the rest as secondary members of the same complex.
 """
 
 import sys
@@ -29,11 +25,21 @@ import config
 PLACEHOLDER_BBL = 5079660001
 
 
-def deduplicate_complexes(df: pd.DataFrame) -> pd.DataFrame:
+def annotate_complexes(df: pd.DataFrame) -> pd.DataFrame:
     """
-    For each BBL with multiple buildings, keep only one representative building.
+    Annotate complexes rather than removing buildings that share a BBL.
+    Adds:
+        - is_complex_duplicate: True when the BBL has multiple records
+        - complex_group_size: number of buildings sharing the BBL
+        - complex_primary: True for the preferred representative record
     """
-    logger.info(f"Deduplicating building complexes...")
+    logger.info("Annotating building complexes (no rows removed)...")
+    df = df.copy()
+
+    # Initialise annotations
+    df['is_complex_duplicate'] = False
+    df['complex_group_size'] = 1
+    df['complex_primary'] = True
 
     # Find BBLs with duplicates (excluding placeholder)
     dup_mask = df['bbl'].duplicated(keep=False) & (df['bbl'] != PLACEHOLDER_BBL)
@@ -45,15 +51,9 @@ def deduplicate_complexes(df: pd.DataFrame) -> pd.DataFrame:
         logger.info("  No duplicates to process!")
         return df
 
-    # Count buildings before deduplication
-    total_before = len(df)
     buildings_in_complexes = dup_mask.sum()
 
     logger.info(f"  Total buildings in complexes: {buildings_in_complexes}")
-
-    # For each duplicate BBL, select the best representative
-    indices_to_keep = []
-    indices_to_remove = []
 
     for bbl in dup_bbls:
         subset = df[df['bbl'] == bbl].copy()
@@ -75,40 +75,26 @@ def deduplicate_complexes(df: pd.DataFrame) -> pd.DataFrame:
 
         # Keep the first one (best match)
         best_idx = sorted_subset.index[0]
-        indices_to_keep.append(best_idx)
+        group_indices = sorted_subset.index.tolist()
 
-        # Mark others for removal
-        for idx in sorted_subset.index[1:]:
-            indices_to_remove.append(idx)
+        df.loc[group_indices, 'is_complex_duplicate'] = True
+        df.loc[group_indices, 'complex_group_size'] = len(group_indices)
+        df.loc[group_indices, 'complex_primary'] = False
+        df.loc[best_idx, 'complex_primary'] = True
 
-        # Log the selection
         best_row = df.loc[best_idx]
-        logger.debug(f"  BBL {int(bbl)}: Kept '{best_row['building_name'] or best_row['address']}' (removed {len(sorted_subset)-1} others)")
+        logger.debug(
+            "  BBL %s: primary '%s' with %d secondary records",
+            str(bbl),
+            best_row['building_name'] or best_row['address'],
+            len(group_indices) - 1,
+        )
 
-    # Also keep all non-duplicate rows
-    non_dup_indices = df[~dup_mask].index.tolist()
-    all_indices_to_keep = non_dup_indices + indices_to_keep
+    logger.info("✓ Complex annotation complete")
+    logger.info(f"  Complex BBLs: {len(dup_bbls)}")
+    logger.info(f"  Buildings flagged as part of complexes: {buildings_in_complexes}")
 
-    # Create deduplicated dataframe
-    result = df.loc[all_indices_to_keep].copy()
-
-    # Sort by index to maintain original order
-    result = result.sort_index()
-
-    # Reset index
-    result = result.reset_index(drop=True)
-
-    # Final summary
-    total_after = len(result)
-    removed_count = total_before - total_after
-
-    logger.info(f"✓ Deduplication complete:")
-    logger.info(f"  Buildings before: {total_before}")
-    logger.info(f"  Buildings after: {total_after}")
-    logger.info(f"  Buildings removed: {removed_count}")
-    logger.info(f"  BBLs deduplicated: {len(dup_bbls)}")
-
-    return result
+    return df
 
 
 def main():
@@ -130,23 +116,14 @@ def main():
     logger.info(f"  Buildings with duplicate BBLs: {dup_count}")
     logger.info(f"  Unique BBLs that are duplicated: {unique_dup_bbls}")
 
-    # Deduplicate
-    result = deduplicate_complexes(df)
+    # Annotate
+    result = annotate_complexes(df)
 
-    # Verify no duplicates remain (except placeholder)
-    remaining_dups = result[
-        result['bbl'].duplicated(keep=False) &
-        (result['bbl'] != PLACEHOLDER_BBL)
-    ]
-
-    if len(remaining_dups) > 0:
-        logger.warning(f"⚠ {len(remaining_dups)} duplicate BBLs still remain!")
-    else:
-        logger.info(f"\n✓ All BBL duplicates resolved!")
-
-    # BBL coverage check
-    bbl_count = result['bbl'].notna().sum()
-    logger.info(f"\n✓ BBL coverage: {bbl_count}/{len(result)} ({bbl_count/len(result)*100:.1f}%)")
+    # Summary stats already logged inside annotate_complexes; reiterate headline numbers
+    flagged = result['is_complex_duplicate'].sum()
+    logger.info(f"\nPost-annotation:")
+    logger.info(f"  Complex rows flagged: {flagged}")
+    logger.info(f"  Complex primary rows: {result['complex_primary'].sum()}")
 
     # Save checkpoint
     output_path = f"{config.INTERMEDIATE_DIR}/03g_deduplicated.csv"

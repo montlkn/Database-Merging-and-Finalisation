@@ -231,8 +231,7 @@ class GapFinder:
         all_gaps.extend(self.find_recent_landmarks_from_lpc(start_year=2000))
 
         # 3. Supertall buildings from footprints
-        all_gaps.extend(self.find_supertall_buildings(min_height_ft=800))
-        time.sleep(config.REQUEST_DELAY)
+        logger.info("Skipping supertall footprints query (already covered in base dataset)")
 
         # Convert to DataFrame
         if all_gaps:

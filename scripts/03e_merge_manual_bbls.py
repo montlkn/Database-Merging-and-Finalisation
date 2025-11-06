@@ -20,6 +20,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 import pandas as pd
+import re
 from utils import save_checkpoint, load_checkpoint, logger
 import config
 
@@ -53,11 +54,18 @@ def merge_manual_bbls(df: pd.DataFrame, manual_file: str) -> pd.DataFrame:
 
             if len(match) > 0:
                 match_idx = match.index[0]
-                df.at[match_idx, 'bbl'] = float(str(row['bbl_manual']).strip())
+                bbl_text = str(row['bbl_manual']).strip()
+                bbl_match = re.search(r'\d+', bbl_text)
+                if not bbl_match:
+                    continue
+                df.at[match_idx, 'bbl'] = float(bbl_match.group())
 
                 # Also merge BIN if provided
                 if pd.notna(row.get('bin_manual')) and str(row['bin_manual']).strip():
-                    df.at[match_idx, 'bin'] = float(str(row['bin_manual']).strip())
+                    bin_text = str(row['bin_manual']).strip()
+                    bin_match = re.search(r'\d+', bin_text)
+                    if bin_match:
+                        df.at[match_idx, 'bin'] = float(bin_match.group())
 
                 merged_count += 1
 
