@@ -179,12 +179,28 @@ def geocode_buildings(df: pd.DataFrame, geoclient: NYCGeoclient) -> pd.DataFrame
     for idx, row in tqdm(df.iterrows(), total=len(df), desc="Geocoding"):
         address = row.get('address')
         borough_hint = row.get('borough_hint')
+        existing_bbl = row.get('bbl')
+        existing_bin = row.get('bin')
+
+        # Skip if already has BBL and BIN (already geocoded)
+        if pd.notna(existing_bbl) and pd.notna(existing_bin):
+            results.append({
+                'bbl': existing_bbl,
+                'bin': existing_bin,
+                'geocoded_lat': row.get('input_lat'),
+                'geocoded_lng': row.get('input_lng'),
+                'borough_code': None,  # Will be derived from BBL in later steps
+                'borough_name': borough_hint if pd.notna(borough_hint) else None,
+                'normalized_address': address,
+                'geocode_status': 'already_geocoded'
+            })
+            continue
 
         # Skip if no address
         if pd.isna(address) or not address:
             results.append({
-                'bbl': row.get('bbl'),
-                'bin': row.get('bin'),
+                'bbl': existing_bbl,
+                'bin': existing_bin,
                 'geocoded_lat': row.get('input_lat'),
                 'geocoded_lng': row.get('input_lng'),
                 'borough_code': None,

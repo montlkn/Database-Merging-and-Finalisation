@@ -105,6 +105,9 @@ def standardize_existing_landmarks(df: pd.DataFrame) -> pd.DataFrame:
         'latitude': None,  # Will extract from geometry later
         'longitude': None,
         'geometry': df.get('geometry'),  # Keep original geometry
+        'bbl': df.get('BBL'),  # Preserve BBL from existing data
+        'bin': df.get('BIN'),  # Preserve BIN from existing data
+        'is_complex_representative': df.get('is_complex_representative'),  # Preserve complex flag
         'source': 'existing_landmarks',
         'source_confidence': 0.9  # Existing data assumed good
     })

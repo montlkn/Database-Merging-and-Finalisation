@@ -10,9 +10,10 @@ Goal: Clean, deduplicated, consistent dataset
 Tasks:
 1. Fix borough_name column (extract from BBL first digit)
 2. Consolidate duplicate columns (BBL/bbl, year_built/yearbuilt, etc.)
-3. Remove any true duplicates (same BBL, BIN, and name)
-4. Standardize column names
-5. Final data validation
+3. Apply primary limit (top 4000 primary representatives + their associated complex buildings)
+4. Remove any true duplicates (same BBL, BIN, and name)
+5. Standardize column names
+6. Final data validation
 """
 
 import sys
@@ -123,6 +124,88 @@ def consolidate_columns(df: pd.DataFrame) -> pd.DataFrame:
     logger.info(f"  Final columns: {final_cols} (removed {initial_cols - final_cols})")
 
     return df
+
+
+def apply_primary_limit(df: pd.DataFrame, limit: int = 4000) -> pd.DataFrame:
+    """
+    Filter to top N primary representatives + their associated complex buildings.
+
+    Strategy:
+    1. Identify top N primary representatives (is_complex_representative == True)
+    2. Keep ALL associated complex buildings for those primaries
+    3. Preserve is_complex_representative column for downstream use
+
+    Args:
+        df: Input dataframe
+        limit: Number of primary representatives to keep (default 4000)
+
+    Returns:
+        Filtered dataframe with primaries + their complexes
+    """
+    logger.info(f"\nApplying {limit:,} primary representative limit...")
+
+    initial_count = len(df)
+
+    # Check if is_complex_representative column exists
+    if 'is_complex_representative' not in df.columns:
+        logger.warning("  ⚠ is_complex_representative column not found - skipping filter")
+        return df
+
+    # Count primaries and complexes
+    primary_count = (df['is_complex_representative'] == True).sum()
+    complex_count = (df['is_complex_representative'] == False).sum()
+
+    logger.info(f"  Current dataset:")
+    logger.info(f"    Primary representatives: {primary_count:,}")
+    logger.info(f"    Complex buildings: {complex_count:,}")
+    logger.info(f"    Total: {initial_count:,}")
+
+    if primary_count <= limit:
+        logger.info(f"  ✓ Already under {limit:,} primaries - no filtering needed")
+        return df
+
+    # Get top N primary representatives
+    # Sort by height (descending) to get tallest/most important buildings
+    primaries = df[df['is_complex_representative'] == True].copy()
+
+    # Sort by height if available, otherwise by year_built
+    if 'height' in primaries.columns:
+        primaries_sorted = primaries.sort_values('height', ascending=False, na_position='last')
+        logger.info(f"  Sorting primaries by height (descending)")
+    elif 'year_built' in primaries.columns:
+        primaries_sorted = primaries.sort_values('year_built', ascending=False, na_position='last')
+        logger.info(f"  Sorting primaries by year_built (descending)")
+    else:
+        primaries_sorted = primaries  # Keep original order
+        logger.info(f"  Keeping original order (no height or year_built)")
+
+    # Take top N primaries
+    top_primaries = primaries_sorted.head(limit)
+
+    # Get BBLs of top primaries to identify their associated complexes
+    top_primary_bbls = set(top_primaries['bbl'].dropna().unique())
+
+    logger.info(f"  Selected top {limit:,} primaries from {len(top_primary_bbls):,} unique BBLs")
+
+    # Filter dataframe to include:
+    # 1. Top N primaries
+    # 2. All complex buildings sharing BBLs with those primaries
+    df_filtered = df[
+        (df['bbl'].isin(top_primary_bbls)) |  # Buildings sharing BBL with top primaries
+        (df['is_complex_representative'] == True).isin(top_primaries.index)  # Or is a top primary
+    ].copy()
+
+    final_count = len(df_filtered)
+    final_primary_count = (df_filtered['is_complex_representative'] == True).sum()
+    final_complex_count = (df_filtered['is_complex_representative'] == False).sum()
+
+    logger.info(f"  Final dataset:")
+    logger.info(f"    Primary representatives: {final_primary_count:,}")
+    logger.info(f"    Associated complex buildings: {final_complex_count:,}")
+    logger.info(f"    Total: {final_count:,}")
+    logger.info(f"  Removed {initial_count - final_count:,} buildings")
+
+    return df_filtered
 
 
 def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
@@ -272,10 +355,13 @@ def main():
     # 2. Consolidate columns
     df = consolidate_columns(df)
 
-    # 3. Remove duplicates
+    # 3. Apply primary limit (4000 primaries + their complexes)
+    df = apply_primary_limit(df, limit=4000)
+
+    # 4. Remove duplicates
     df = remove_duplicates(df)
 
-    # 4. Standardize column order
+    # 5. Standardize column order
     df = standardize_column_order(df)
 
     # 5. Final validation

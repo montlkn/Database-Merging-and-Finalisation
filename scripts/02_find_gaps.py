@@ -307,6 +307,12 @@ def main():
 
     else:
         logger.info("\n✓ No gaps found - proceeding with existing dataset")
+
+        # Even if no gaps found, copy the file forward for the next step
+        output_path = f"{config.INTERMEDIATE_DIR}/02_combined_with_gaps.csv"
+        save_checkpoint(existing_df, output_path)
+        logger.info(f"Saved existing dataset to: {output_path}")
+
         logger.info("Next: Run 03_geocode.py to get BBL/BIN for all buildings")
 
 
