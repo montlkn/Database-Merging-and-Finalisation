@@ -1,0 +1,48 @@
+======================================================================
+DATA COMPLETENESS REPORT
+======================================================================
+
+Total buildings: 37385
+
+FIELD-LEVEL COMPLETENESS:
+----------------------------------------------------------------------
+  bbl               :  37363/ 37385 ( 99.9%)
+  bin               :  37351/ 37385 ( 99.9%)
+  latitude          :    316/ 37385 (  0.8%)
+  longitude         :    316/ 37385 (  0.8%)
+  year_built        :  37385/ 37385 (100.0%)
+  numfloors         :  36644/ 37385 ( 98.0%)
+  height            :  37385/ 37385 (100.0%)
+  building_name     :  37385/ 37385 (100.0%)
+  address           :  37385/ 37385 (100.0%)
+  borough_name      :  37070/ 37385 ( 99.2%)
+
+BUILDING-LEVEL COMPLETENESS:
+----------------------------------------------------------------------
+  Fully complete (0 missing):          306 (  0.8%)
+  Mostly complete (1-2 missing):     37070 ( 99.2%)
+  Partially complete (3-5 missing):      9 (  0.0%)
+  Mostly incomplete (>5 missing):        0 (  0.0%)
+
+Average completeness: 74.7%
+
+CRITICAL FIELD MISSING:
+----------------------------------------------------------------------
+  bbl                 :     22 buildings (  0.1%)
+  latitude            :  37069 buildings ( 99.2%)
+  longitude           :  37069 buildings ( 99.2%)
+
+NEW_ADDITIONS SPECIFIC:
+----------------------------------------------------------------------
+Total new_additions: 315
+Fully complete:      305 ( 96.8%)
+Average completeness: 99.2%
+
+IMPORTANT NOTE:
+----------------------------------------------------------------------
+The low latitude/longitude percentage (0.8%) is due to existing
+landmarks storing coordinates in 'geometry' or 'the_geom' columns
+(GIS format) rather than latitude/longitude columns.
+
+NEW ADDITIONS coordinate completeness: 100% (all 315 buildings)
+EXISTING LANDMARKS: Coordinates stored in geometry field

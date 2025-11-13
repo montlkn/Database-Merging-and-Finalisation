@@ -1,0 +1,113 @@
+address,building_name,bbl,bin,latitude,longitude,numfloors,year_built,input_lat,input_lng,issues
+1 Idlewild Drive,1 Idlewild Drive,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+200 Park Avenue,MetLife Building,1012809010.0,1085735,40.7543,-73.9764,,1963.0,40.7543,-73.9764,missing_floors|missing_geometry
+Flushing Meadows Corona Park,Flushing Meadows Corona Park,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+10 Chrystie Street,10 Chrystie Street,5079660001.0,5088547,40.7161,-73.9939,2.0,1968.0,40.7161,-73.9939,placeholder_bbl
+59th Street and 2nd Avenue,59th Street and 2nd Avenue,5079660001.0,5088547,40.7592,-73.9619,2.0,1975.0,40.7592,-73.9619,placeholder_bbl
+601 Lexington Avenue,601 Lexington Avenue,1201359999.0,1090884,40.7592,-73.9708,,1976.0,40.7592,-73.9708,missing_floors
+119 West 56th Street,119 West 56th Street,1010080039.0,1023398,40.7638,-73.98,,1981.0,40.7638,-73.98,missing_floors
+885 Third Avenue,885 Third Avenue,1013270001.0,1038549,40.7588,-73.9692,,1986.0,40.7588,-73.9692,missing_floors
+4 Times Square,4 Times Square,1009959999.0,1088995,40.7562,-73.9861,,1999.0,40.7562,-73.9861,missing_floors
+3 Times Square,3 Times Square,1009959999.0,1088995,40.7563,-73.988,,2000.0,40.7563,-73.988,missing_floors
+235 Bowery,235 Bowery,1004920019.0,1007461,40.7223,-73.9928,,2007.0,40.7223,-73.9928,missing_floors
+Gansevoort & Washington Streets,Gansevoort & Washington Streets,5079660001.0,5088547,40.7479,-74.0055,2.0,2009.0,40.7479,-74.0055,placeholder_bbl
+620 Atlantic Avenue,620 Atlantic Avenue,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+56 Leonard Street,56 Leonard Street,1001770007.0,1001974,40.7176,-74.0051,,2017.0,40.7176,-74.0051,missing_floors
+545 West 30th Street,545 West 30th Street,1007027502.0,1091045,40.7533,-74.0019,70.0,2019.0,40.7533,-74.0019,missing_geometry
+Pier 55,Pier 55,5079660001.0,5000000,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+262 1st Street,262 1st Street,1009720001.0,1082872,,,13.0,,,,missing_coords|missing_year
+26 Federal Plaza,26 Federal Plaza,1001520030.0,1001662,40.7145,-74.0048,,1967.0,40.7145,-74.0048,missing_floors
+599 Lexington Avenue,599 Lexington Avenue,1201359999.0,1090884,40.7593,-73.97,,1986.0,40.7593,-73.97,missing_floors
+One Jackson Square,One Jackson Square,1006160054.0,1000000,40.7368,-74.0018,,2009.0,40.7368,-74.0018,missing_floors
+55 Water Street,55 Water Street,1000300032.0,1000856,,,4.0,,,,missing_coords|missing_year
+152 Elizabeth Street,152 Elizabeth Street,1004780007.0,1090480,40.7208,-73.9944,,2017.0,40.7208,-73.9944,missing_floors
+611 West 56th Street,611 West 56th Street,1011040025.0,1090820,40.7702,-73.992,,2020.0,40.7702,-73.992,missing_floors
+138 Willoughby Street,138 Willoughby Street,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+189 Schermerhorn Street,189 Schermerhorn Street,1019730001.0,1084461,,,7.0,,,,missing_coords|missing_year
+165 Charles Street,165 Charles Street,1006370001.0,1087065,40.7337,-74.0107,,2004.0,40.7337,-74.0107,missing_floors
+25 Park Row,25 Park Row,1000900013.0,1090476,40.7118,-74.0078,,2021.0,40.7118,-74.0078,missing_floors
+15 Hudson Yards,15 Hudson Yards,1006760001.0,1084714,40.7525,-74.0025,,2019.0,40.7525,-74.0025,missing_floors
+130 Felix Street,130 Felix Street,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+23-10 44th Drive,23-10 44th Drive,1012790017.0,1035370,,,11.0,,,,missing_coords|missing_year
+25 Kent Avenue,25 Kent Avenue,1019730001.0,1082159,,,7.0,,,,missing_coords|missing_year
+260 South Street,260 South Street,1002410010.0,1000000,40.71,-73.984,,1974.0,40.71,-73.984,missing_floors
+33 Beekman Street,33 Beekman Street,1000920001.0,1089833,40.7099,-74.0051,,2015.0,40.7099,-74.0051,missing_floors
+100 East 125th Street,100 East 125th Street,1017730069.0,1081560,40.805,-73.939,,2017.0,40.805,-73.939,missing_floors
+1 Wall Street,1 Wall Street,1000237501.0,1000815,,,52.0,,,,missing_coords|missing_year
+11 Hoyt Street,11 Hoyt Street,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+1 South 1st Street,1 South 1st Street,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+29-59 Northern Boulevard,29-59 Northern Boulevard,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+23-15 44th Drive,23-15 44th Drive,1012790017.0,1035370,,,11.0,,,,missing_coords|missing_year
+77 Greenwich Street,77 Greenwich Street,1000190013.0,1000796,40.7062,-74.0143,,2022.0,40.7062,-74.0143,missing_floors
+22 North 6th Street,22 North 6th Street,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+227 West Street,227 West Street,1001840005.0,1088457,,,2.0,,,,missing_coords|missing_year
+645 West 59th Street,645 West 59th Street,1011717515.0,1089374,40.772,-73.9895,,2019.0,40.772,-73.9895,missing_floors
+1 Dekalb Avenue,1 Dekalb Avenue,1003720064.0,1000000,,,13.0,,,,missing_coords|missing_year
+336 Flatbush Avenue Extension,336 Flatbush Avenue Extension,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+333 Schermerhorn Street,333 Schermerhorn Street,1019730001.0,1084461,,,7.0,,,,missing_coords|missing_year
+111 North 12th Street,111 North 12th Street,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+21 India Street,21 India Street,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+325 Kent Avenue,325 Kent Avenue,1019730001.0,1082159,,,7.0,,,,missing_coords|missing_year
+28-07 Jackson Avenue,28-07 Jackson Avenue,1003720064.0,1000000,,,13.0,,,,missing_coords|missing_year
+50 East 149th Street,50 East 149th Street,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+15 Bridge Park Drive,15 Bridge Park Drive,1240009978.0,1797020,40.708044,-73.999344,2.0,,,,missing_year
+1 John Street,1 John Street,1000790015.0,1001218,,,9.0,,,,missing_coords|missing_year
+300 Ashland Place,300 Ashland Place,5079660001.0,5088547,40.6865,-73.978,2.0,2017.0,40.6865,-73.978,placeholder_bbl
+138 East 50th Street,138 East 50th Street,1013040045.0,1090524,40.7565,-73.972,,2019.0,40.7565,-73.972,missing_floors
+257 West 86th Street,257 West 86th Street,1012330058.0,1033143,40.7875,-73.9805,,2019.0,40.7875,-73.9805,missing_floors
+514 West 24th Street,514 West 24th Street,1006950047.0,1090213,40.7495,-74.0065,,2018.0,40.7495,-74.0065,missing_floors
+100 Willoughby Street,100 Willoughby Street,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+155 Front Street,155 Front Street,1000710001.0,1001136,,,9.0,,,,missing_coords|missing_year
+141 Willoughby Street,141 Willoughby Street,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+470 Kent Avenue,470 Kent Avenue,1019730001.0,1082159,,,7.0,,,,missing_coords|missing_year
+27-19 44th Drive,27-19 44th Drive,1012790017.0,1035370,,,11.0,,,,missing_coords|missing_year
+43-25 Hunter Street,43-25 Hunter Street,1003720064.0,1000000,,,13.0,,,,missing_coords|missing_year
+27-21 44th Drive,27-21 44th Drive,1012790017.0,1035370,,,11.0,,,,missing_coords|missing_year
+45-45 Center Boulevard,45-45 Center Boulevard,1012140029.0,1032119,,,3.0,,,,missing_coords|missing_year
+22-44 Jackson Avenue,22-44 Jackson Avenue,1003720064.0,1000000,,,13.0,,,,missing_coords|missing_year
+26 Central Avenue,26 Central Avenue,1003720064.0,1000000,,,13.0,,,,missing_coords|missing_year
+461 West 42nd Street,461 West 42nd Street,5079660001.0,5088547,40.7585,-73.994,2.0,2011.0,40.7585,-73.994,placeholder_bbl
+120 Nassau Street,120 Nassau Street,1000900014.0,1089791,,,,,,,missing_coords|missing_floors|missing_year
+211 Schermerhorn Street,211 Schermerhorn Street,1019730001.0,1084461,,,7.0,,,,missing_coords|missing_year
+280 Cadman Plaza West,280 Cadman Plaza West,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+209 Havemeyer Street,209 Havemeyer Street,1019730001.0,1084468,,,7.0,,,,missing_coords|missing_year
+420 Kent Avenue,420 Kent Avenue,1019730001.0,1082159,,,7.0,,,,missing_coords|missing_year
+2 Worth Street,2 Worth Street,1001790013.0,1090927,40.7235,-74.0105,,2015.0,40.7235,-74.0105,missing_floors
+833 Spofford Avenue,833 Spofford Avenue,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+Governors Island,Governors Island,1000010111.0,1086331,,,3.0,,,,missing_coords|missing_year
+Center Boulevard,Center Boulevard,1012140029.0,1032119,,,3.0,,,,missing_coords|missing_year
+1 Prospect Park West,1 Prospect Park West,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+497 Zerega Avenue,497 Zerega Avenue,1005300001.0,1008467,,,5.0,,,,missing_coords|missing_year
+40 Tenth Avenue,40 Tenth Avenue,1006460010.0,1012223,40.742,-74.0085,,2019.0,40.742,-74.0085,missing_floors
+1475 Broadway,1475 Broadway,1009959999.0,1088995,40.7558,-73.9861,,2024.0,40.7558,-73.9861,missing_floors
+1 Boerum Place,1 Boerum Place,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+One Bell Slip,One Bell Slip,1006890017.0,1090682,,,,,,,missing_coords|missing_floors|missing_year
+101 Lincoln Avenue,101 Lincoln Avenue,1003720064.0,1000000,,,13.0,,,,missing_coords|missing_year
+34 North 7th Street,34 North 7th Street,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+52-03 Center Boulevard,52-03 Center Boulevard,1012140029.0,1032119,,,3.0,,,,missing_coords|missing_year
+52-41 Center Boulevard,52-41 Center Boulevard,1012140029.0,1032119,,,3.0,,,,missing_coords|missing_year
+28-10 Jackson Avenue,28-10 Jackson Avenue,1003720064.0,1000000,,,13.0,,,,missing_coords|missing_year
+425 West 17th Street,425 West 17th Street,5079660001.0,5088547,40.743,-74.003,2.0,2008.0,40.743,-74.003,placeholder_bbl
+647 Fulton Street,647 Fulton Street,1000790015.0,1089384,,,9.0,,,,missing_coords|missing_year
+262 Ashland Place,262 Ashland Place,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+63 5th Avenue,63 5th Avenue,1005770044.0,1009720,40.735,-73.994,,2014.0,40.735,-73.994,missing_floors
+3300 Fillmore Avenue,3300 Fillmore Avenue,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+54 Noll Street,54 Noll Street,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+123 Melrose Street,123 Melrose Street,1004290021.0,1005743,,,20.0,,,,missing_coords|missing_year
+89 Grand Street,89 Grand Street,1002300028.0,1002996,,,5.0,,,,missing_coords|missing_year
+5 East 62nd Street,5 East 62nd Street,1013770005.0,1041003,40.7655,-73.971,,1969.0,40.7655,-73.971,missing_floors
+15 Central Park West,15 Central Park West,1011110001.0,1083806,40.7698,-73.9815,,2008.0,40.7698,-73.9815,missing_floors
+515 West 29th Street,515 West 29th Street,1007010028.0,1012444,40.7524,-74.0062,,2017.0,40.7524,-74.0062,missing_floors
+443 Greenwich Street,443 Greenwich Street,1002230033.0,1002912,40.722,-74.009,,2017.0,40.722,-74.009,missing_floors
+57 Ann Street,57 Ann Street,1000910008.0,1001264,40.7105,-74.0068,,2019.0,40.7105,-74.0068,missing_floors
+15 Renwick Street,15 Renwick Street,1005940065.0,1010303,40.7222,-74.0075,,2008.0,40.7222,-74.0075,missing_floors
+515 High Line,515 High Line,5079660001.0,1797002,40.7476,-74.0074,2.0,2017.0,40.7476,-74.0074,placeholder_bbl
+345 Meatpacking,345 Meatpacking,5079660001.0,5088547,40.74,-74.0076,2.0,2015.0,40.74,-74.0076,placeholder_bbl
+325 West Broadway,325 West Broadway,1002280020.0,1090164,40.723,-74.0022,,2023.0,40.723,-74.0022,missing_floors
+168 Plymouth Street,168 Plymouth Street,5079660001.0,5088547,,,2.0,,,,placeholder_bbl|missing_coords|missing_year
+55 West 17th Street,55 West 17th Street,1008190015.0,1015411,40.739,-73.994,,2015.0,40.739,-73.994,missing_floors
+301 West 53rd Street,301 West 53rd Street,1010430036.0,1025323,40.766,-73.9875,,2014.0,40.766,-73.9875,missing_floors
+173 and 176 Perry Street,173 and 176 Perry Street,5079660001.0,5088547,40.7358,-74.0075,2.0,2002.0,40.7358,-74.0075,placeholder_bbl
+196 and 200 Eleventh Avenue,196 and 200 Eleventh Avenue,5079660001.0,5088547,40.7475,-74.0105,2.0,2019.0,40.7475,-74.0105,placeholder_bbl
+565 Broome SoHo,565 Broome SoHo,1004770048.0,1083493,40.7236,-74.0018,,2018.0,40.7236,-74.0018,missing_floors
+8 Union Square South,8 Union Square South,1005710022.0,1009399,40.7349,-73.9913,,2019.0,40.7349,-73.9913,missing_floors

@@ -1,0 +1,41 @@
+NEW ADDITIONS - MISSING DATA SUMMARY
+=====================================
+Total new additions: 315
+Buildings with missing data: 106 unique buildings
+
+CRITICAL MISSING DATA:
+- 62 buildings missing lat/long (19.7%)
+- 41 buildings missing floor count (13.0%)
+- 62 buildings missing year built (19.7%)
+- 2 buildings missing geometry footprint (0.6%)
+
+TWO BUILDINGS MISSING GEOMETRY:
+1. 200 Park Avenue - MetLife Building (BBL: 1012809, BIN: 1085735) - Has coords: 40.7543, -73.9764
+2. 545 West 30th Street (BBL: 1007028, BIN: 1091045) - Has coords: 40.7533, -74.0019
+
+62 BUILDINGS MISSING LAT/LONG & YEAR:
+These all have placeholder BBL (5079660001) or failed geocoding:
+- Flushing Meadows Corona Park (park)
+- Pier 55 (park structure)
+- Governors Island (island, not a specific building)
+- 1 Idlewild Drive, 620 Atlantic Avenue, 262 1st Street (geocoding failed)
+- Multiple Brooklyn/Queens addresses that couldn't be geocoded
+- Many have BIN 5088547 (placeholder) or 1000000 (placeholder)
+
+41 BUILDINGS MISSING FLOORS:
+Notable ones with height but no floor count:
+- MetLife Building (200 Park Avenue) - Height: 500 ft
+- 601 Lexington Avenue - Height: 0 ft (bad data)
+- 119 West 56th Street - Height: 300 ft
+- 885 Third Avenue - Height: 464 ft
+- 56 Leonard Street - Height: 137 ft
+- 138 East 50th Street - Height: 802 ft
+- 120 Nassau Street - Height: 595 ft
+
+RECOMMENDATIONS:
+1. For the 62 missing lat/long: Use Google Maps to manually get coordinates
+2. For the 41 missing floors: Either research or estimate from height (height/13.67 ft per floor)
+3. For the 62 missing years: Research building completion dates
+4. For the 2 missing geometry: May need to manually add from NYC Building Footprints API
+
+These can be filled in a CSV and re-imported, or added via Exa/manual research in Step 11.

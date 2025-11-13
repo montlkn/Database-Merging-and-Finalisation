@@ -1,0 +1,39 @@
+address,original_issues,remaining_issues,bbl,has_coords,has_year,has_floors
+1 Boerum Place,"placeholder_bbl, missing_coords, missing_year","placeholder_bbl, missing_year",5079660001.0,True,False,True
+1 Idlewild Drive,"placeholder_bbl, missing_coords, missing_year",missing_bbl,,True,True,True
+1 Prospect Park West,"placeholder_bbl, missing_coords, missing_year","placeholder_bbl, missing_year",5079660001.0,True,False,True
+1 South 1st Street,"placeholder_bbl, missing_coords, missing_year",placeholder_bbl,5079660001.0,True,True,True
+100 Willoughby Street,"placeholder_bbl, missing_coords, missing_year",placeholder_bbl,5079660001.0,True,True,True
+11 Hoyt Street,"placeholder_bbl, missing_coords, missing_year",missing_coords,3001570001.0,False,True,True
+111 North 12th Street,"placeholder_bbl, missing_coords, missing_year","placeholder_bbl, missing_coords, missing_year",5079660001.0,False,False,True
+123 Melrose Street,"missing_coords, missing_year",missing_year,1004290021.0,True,False,True
+130 Felix Street,"placeholder_bbl, missing_coords, missing_year",missing_year,3018640014.0,True,False,True
+168 Plymouth Street,"placeholder_bbl, missing_coords, missing_year","missing_coords, missing_year",3018640014.0,False,False,True
+173 and 176 Perry Street,placeholder_bbl,placeholder_bbl,5079660001.0,True,True,True
+200 Park Avenue,"missing_floors, missing_geometry",missing_geometry,1012809010.0,True,True,True
+209 Havemeyer Street,"missing_coords, missing_year",missing_year,1019730001.0,True,False,True
+21 India Street,"placeholder_bbl, missing_coords, missing_year","placeholder_bbl, missing_coords",5079660001.0,False,True,True
+22 North 6th Street,"placeholder_bbl, missing_coords, missing_year","placeholder_bbl, missing_year",5079660001.0,True,False,True
+22-44 Jackson Avenue,"missing_coords, missing_year",missing_coords,1003720064.0,False,True,True
+23-10 44th Drive,"missing_coords, missing_year","missing_coords, missing_year",1012790017.0,False,False,True
+23-15 44th Drive,"missing_coords, missing_year","missing_coords, missing_year",1012790017.0,False,False,True
+262 1st Street,"missing_coords, missing_year",missing_coords,1009720001.0,False,True,True
+262 Ashland Place,"placeholder_bbl, missing_coords, missing_year","placeholder_bbl, missing_year",5079660001.0,True,False,True
+27-19 44th Drive,"missing_coords, missing_year",missing_coords,1012790017.0,False,True,True
+27-21 44th Drive,"missing_coords, missing_year",missing_coords,1012790017.0,False,True,True
+28-07 Jackson Avenue,"missing_coords, missing_year",missing_coords,1003720064.0,False,True,True
+280 Cadman Plaza West,"placeholder_bbl, missing_coords, missing_year",missing_year,3001120100.0,True,False,True
+29-59 Northern Boulevard,"placeholder_bbl, missing_coords, missing_year","placeholder_bbl, missing_coords, missing_year",5079660001.0,False,False,True
+300 Ashland Place,placeholder_bbl,placeholder_bbl,5079660001.0,True,True,True
+34 North 7th Street,"placeholder_bbl, missing_coords, missing_year",missing_year,3023220028.0,True,False,True
+497 Zerega Avenue,"missing_coords, missing_year",missing_year,1005300001.0,True,False,True
+50 East 149th Street,"placeholder_bbl, missing_coords, missing_year",missing_year,2039230036.0,True,False,True
+515 High Line,placeholder_bbl,placeholder_bbl,5079660001.0,True,True,True
+52-03 Center Boulevard,"missing_coords, missing_year",missing_coords,1012140029.0,False,True,True
+54 Noll Street,"placeholder_bbl, missing_coords, missing_year",placeholder_bbl,5079660001.0,True,True,True
+545 West 30th Street,missing_geometry,missing_geometry,1007027502.0,True,True,True
+59th Street and 2nd Avenue,placeholder_bbl,missing_bbl,,True,True,True
+620 Atlantic Avenue,"placeholder_bbl, missing_coords, missing_year","placeholder_bbl, missing_coords, missing_year",5079660001.0,False,False,True
+833 Spofford Avenue,"placeholder_bbl, missing_coords, missing_year",placeholder_bbl,5079660001.0,True,True,True
+Governors Island,"missing_coords, missing_year",missing_year,1000010111.0,True,False,True
+Pier 55,"placeholder_bbl, missing_coords, missing_year","missing_bbl, missing_year",,True,False,True
