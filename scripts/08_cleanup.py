@@ -341,8 +341,8 @@ def main():
     logger.info("=" * 60)
     logger.info("GOAL: Clean, deduplicated, consistent dataset")
 
-    # Load current state
-    input_path = f"{config.INTERMEDIATE_DIR}/06_names_enriched.csv"
+    # Load current state - using ML scored data from Step 07
+    input_path = f"{config.INTERMEDIATE_DIR}/optimized_landmarks_ml_score.csv"
     logger.info(f"\nLoading: {input_path}")
     df = load_checkpoint(input_path)
 
@@ -355,8 +355,9 @@ def main():
     # 2. Consolidate columns
     df = consolidate_columns(df)
 
-    # 3. Apply primary limit (4000 primaries + their complexes)
-    df = apply_primary_limit(df, limit=4000)
+    # 3. Apply primary limit (DISABLED for now - keeping all buildings)
+    # df = apply_primary_limit(df, limit=4000)
+    logger.info("\nSkipping 4K primary limit (keeping all buildings)")
 
     # 4. Remove duplicates
     df = remove_duplicates(df)
